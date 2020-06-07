@@ -1,6 +1,6 @@
 # Project SNAK3
 
-- Remix na klasickou hru Snake v https://p5js.org/
+- cílem tohoto projektu bylo vytvořit remix na klasickou hru Snake v https://p5js.org/
 
 ## Features:
 

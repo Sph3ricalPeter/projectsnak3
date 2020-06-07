@@ -1,3 +1,7 @@
+/**
+ * This class handles score couting and storing
+ * Uses local storage to persist data
+ */
 class Score {
   constructor() {
     this.hiscores = { player: 0 };
@@ -5,6 +9,19 @@ class Score {
     this.current = 0;
   }
 
+  /**
+   * Resets hiscores and saved hiscores to initial values
+   */
+  reset() {
+    score.hiscores = {};
+    score.nickname = "Player";
+    score.current = 0;
+    score.recordHiscore();
+  }
+
+  /**
+   * Saves current player's highscore
+   */
   recordHiscore() {
     if (this.hiscores[this.nickname] == null) {
       this.hiscores[this.nickname] = 0;
@@ -18,6 +35,9 @@ class Score {
     localStorage.setItem("hiscores", JSON.stringify(this.hiscores));
   }
 
+  /**
+   * Loads hiscores from localStorage, if item doesn't exist, creates new empty hiscores
+   */
   loadHiscores() {
     this.hiscores = JSON.parse(localStorage.getItem("hiscores"));
 
@@ -29,7 +49,8 @@ class Score {
   }
 
   /**
-   * Returns top 10 player + scores from the hiscores array
+   * Returns top entries from hiscores sorted by score in descending order
+   * @param {number} n number of top entris to be returned
    */
   getTopN(n) {
     let scoresArray = Object.keys(this.hiscores).map((player) => {

@@ -1,8 +1,12 @@
+/* Class that represents food and its properties */
 class Food {
   constructor() {
     this.position = createVector(0, 0);
   }
 
+  /**
+   * Places food in a random cell in game grid
+   */
   placeRandomly() {
     this.position = createVector(
       floor(random(1, game.grid.x)),
@@ -10,6 +14,9 @@ class Food {
     );
   }
 
+  /**
+   * Displays food in the current draw loop
+   */
   display() {
     if (game.mode == game.Modes.ARCADE) {
       fill(0, 255, 100);

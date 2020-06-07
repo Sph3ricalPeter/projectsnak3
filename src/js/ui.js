@@ -1,5 +1,9 @@
+/* 
+  This class controls all UI, which is split into menu modules that have separate class
+*/
 class UI {
   constructor() {
+    // state = current UI module displayed
     this.States = {
       MainMenu: 0,
       NickPicker: 1,
@@ -11,7 +15,7 @@ class UI {
 
     this.state = this.States.MainMenu;
 
-    // fader
+    // fader allows fullscreen transition from color to another color
     this.fader = new Fader();
     this.fader.fadeBlackToAlpha(1);
 
@@ -23,17 +27,18 @@ class UI {
       "screen size is too small"
     );
 
+    // UI menus
     this.mainMenu = new MainMenuUI();
     this.nickPicker = new NickPickerUI();
     this.hud = new HUD();
     this.gameOver = new GameOverUI();
     this.hiscores = new HiscoresUI();
-    /* this.settings = new SettingsUI();
-    this.settings.show(false); */
+    this.settings = new SettingsUI();
 
     this.changeState(this.States.MainMenu);
   }
 
+  // updates UI according to screen size, updates fader animation
   update() {
     if (smallScreen) {
       this.disableEverything();
@@ -47,11 +52,13 @@ class UI {
     this.fader.draw();
   }
 
+  // changes currently displayed menu
   changeState(state) {
     this.state = state;
     this.showUIByState();
   }
 
+  // shows UI corresponding to current UI state
   showUIByState() {
     this.disableEverything();
 
@@ -71,6 +78,8 @@ class UI {
       case this.States.Hiscores:
         this.hiscores.show(true);
         break;
+      case this.States.Settings:
+        this.settings.show(true);
     }
   }
 
@@ -79,20 +88,40 @@ class UI {
     this.nickPicker.show(false);
     this.gameOver.show(false);
     this.hiscores.show(false);
-    /* this.settings.show(false); */
+    this.settings.show(false);
   }
 }
 
-class MainMenuUI {
+// base class for all menus
+class MenuUI {
   constructor() {
-    // main menu
-    this.mainMenu = document.querySelector("#main-game-menu");
+    this.parent = null;
+  }
+
+  show(show) {
+    if (show) {
+      this.parent.style.display = "flex";
+    } else {
+      this.parent.style.display = "none";
+    }
+  }
+}
+
+// represents main menu, inherits show method from Menu through polymorphism
+class MainMenuUI extends MenuUI {
+  constructor() {
+    super();
+
+    // main menu, override base class' parent
+    this.parent = document.querySelector("#main-game-menu");
 
     this.playButton = document.querySelector("#play-button");
     this.modeSelect = document.querySelector("#mode-select");
     this.playButton.addEventListener("click", () => {
       console.log("play " + this.modeSelect.value);
       ui.changeState(ui.States.NickPicker);
+
+      // change game mode to the one that is selected
       let mode = game.Modes.CLASSIC;
       switch (this.modeSelect.value) {
         case "arcade":
@@ -116,22 +145,20 @@ class MainMenuUI {
     this.settingsButton = document.querySelector("#settings-button");
     this.settingsButton.addEventListener("click", () => {
       console.log("settings");
+      ui.changeState(ui.States.Settings);
     });
-  }
-
-  show(show) {
-    if (show) {
-      this.mainMenu.style.display = "flex";
-    } else {
-      this.mainMenu.style.display = "none";
-    }
   }
 }
 
-class NickPickerUI {
+/* 
+  UI used to pick player nickname and color
+*/
+class NickPickerUI extends MenuUI {
   constructor() {
+    super();
+
     // nick input
-    this.nickInputSection = document.querySelector("#nick-input");
+    this.parent = document.querySelector("#nick-input");
 
     this.nickInputInitValue = "enter your nickname";
     this.nickInputField = document.querySelector("#nickInputField");
@@ -147,6 +174,7 @@ class NickPickerUI {
       }
     });
 
+    // pick color from input type color and set snake's color to it on submit
     this.colorPicker = document.querySelector("#player-color-picker");
     this.nicknameSubmit = document.querySelector("#nick-input-submit");
     this.nicknameSubmit.addEventListener("click", () => {
@@ -161,14 +189,7 @@ class NickPickerUI {
       .insertAdjacentElement("afterbegin", this.nickInputField);
   }
 
-  show(show) {
-    if (show) {
-      this.nickInputSection.style.display = "flex";
-    } else {
-      this.nickInputSection.style.display = "none";
-    }
-  }
-
+  // gathers data from player info input into respective properties
   getPlayerInfoFromInput() {
     if (
       this.nickInputField.value != "" &&
@@ -177,17 +198,17 @@ class NickPickerUI {
     ) {
       score.nickname = this.nickInputField.value;
       game.snakeColor = this.colorPicker.value;
-
-      this.nickInputSection.style.display = "none";
     } else {
       console.error("wrong nickname!");
     }
   }
 }
 
+// HUD is displayed via p5.js, so it doesn't extend Menu
 class HUD {
   constructor() {}
 
+  // draws p5 text on the screen in current draw loop
   draw() {
     this.showScore();
     this.showNickname();
@@ -215,9 +236,14 @@ class HUD {
   }
 }
 
-class GameOverUI {
+/* 
+  This UI is used to diplay game over info and navigation
+*/
+class GameOverUI extends MenuUI {
   constructor() {
-    this.menu = document.querySelector("#game-over");
+    super();
+
+    this.parent = document.querySelector("#game-over");
 
     this.retryButton = document.querySelector("#retry-button");
     this.retryButton.addEventListener("click", () => {
@@ -232,21 +258,16 @@ class GameOverUI {
 
     this.scoreText = document.querySelector("#game-over-score");
   }
-
-  show(show) {
-    if (show) {
-      this.scoreText.innerHTML =
-        "your hiscore: " + score.hiscores[score.nickname];
-      this.menu.style.display = "flex";
-    } else {
-      this.menu.style.display = "none";
-    }
-  }
 }
 
-class HiscoresUI {
+/* 
+  Used to display player's top hiscores
+*/
+class HiscoresUI extends MenuUI {
   constructor() {
-    this.hiscores = document.querySelector("#hiscores");
+    super();
+
+    this.parent = document.querySelector("#hiscores");
 
     this.hiscoresList = document.querySelector("#hiscores-list");
 
@@ -260,19 +281,17 @@ class HiscoresUI {
   }
 
   show(show) {
-    if (show) {
-      this.update();
-      this.hiscores.style.display = "flex";
-    } else {
-      this.hiscores.style.display = "none";
-    }
+    super.show(show);
+    this.update();
   }
 
+  // update topN hiscores and resizes hiscores content to fit current scale
   update() {
     this.topN = score.getTopN(10);
     this.resize(true);
   }
 
+  // displays all top hiscores that fit the current canvas size
   resize(force) {
     let n = parseInt(canvasHeight / 150);
 
@@ -280,9 +299,7 @@ class HiscoresUI {
       this.nShown = n;
       console.log(`hiscores resize to ${this.nShown}`);
 
-      this.hiscores.getElementsByTagName(
-        "h1"
-      )[0].innerHTML = `Top ${n} Hiscores`;
+      this.parent.getElementsByTagName("h1")[0].innerHTML = `Top ${n} Hiscores`;
       this.hiscoresList.innerHTML =
         "<li class='heading'><p>name</p><p>score</p></li>";
 
@@ -304,6 +321,36 @@ class HiscoresUI {
   }
 }
 
+/* 
+  Displays settings menu that allows hiscores reset and audio enable/disable
+*/
+class SettingsUI extends MenuUI {
+  constructor() {
+    super();
+
+    this.parent = document.querySelector("#settings");
+
+    this.audioCheckbox = document.querySelector("#audio-checkbox");
+    this.audioCheckbox.checked = audio.enabled;
+    this.audioCheckbox.addEventListener("change", (e) => {
+      audio.enabled = this.audioCheckbox.checked;
+    });
+
+    this.resetHiscoresButton = document.querySelector("#reset-hiscores-button");
+    this.resetHiscoresButton.addEventListener("click", (e) => {
+      score.reset();
+    });
+
+    this.backButton = document.querySelector("#back-button-settings");
+    this.backButton.addEventListener("click", (e) => {
+      ui.changeState(ui.States.MainMenu);
+    });
+  }
+}
+
+/* 
+  Displays a fullscreen message in the current p5 draw loop via show()
+*/
 class FullscreenInfo {
   constructor(bgColor, textColor, textSize, text) {
     this.bgColor = bgColor;
@@ -322,6 +369,9 @@ class FullscreenInfo {
   }
 }
 
+/* 
+  Animated fading panel from color to another color
+*/
 class Fader {
   constructor() {
     this.progress = 0;
@@ -332,6 +382,7 @@ class Fader {
     this.toColor = color(255, 0);
   }
 
+  // fades from color to color within the duration specified by length
   fade(length, fromColor, toColor) {
     this.length = length;
     this.fromColor = fromColor;
@@ -347,6 +398,7 @@ class Fader {
     this.fade(length, color(255), color(255, 0));
   }
 
+  // updates the progress of the current fade in the current draw loop
   draw() {
     if (this.active) {
       let color = lerpColor(this.fromColor, this.toColor, this.progress);
@@ -362,6 +414,9 @@ class Fader {
   }
 }
 
+/**
+ * Custom canvas-space button, currently not used in the project
+ */
 class Button {
   constructor(x, y, text, size, func) {
     this.x = x;
