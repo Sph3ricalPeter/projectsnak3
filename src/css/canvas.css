@@ -1,0 +1,153 @@
+#canvas-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 88px;
+  flex-grow: 1;
+}
+
+.wrapper-centered-item {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  position: absolute;
+}
+
+#hiscores {
+  width: 500px;
+}
+
+#hiscores-list {
+  padding: 5px;
+  font-size: 0.8em;
+}
+
+#hiscores-list li {
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  text-align: left;
+}
+
+#hiscores-list .heading {
+  color: gray;
+}
+
+#hiscores-list li p {
+  flex: 1 1 0;
+  padding: 3px;
+  margin: 0;
+}
+
+#hiscores-list li :first-child {
+  flex: 2 1 0;
+}
+
+#mode-select {
+  font-size: 24px;
+}
+
+#mode-select > option {
+  border: 0;
+}
+
+#mode-select > option[value="classic"] {
+  color: rgb(255, 0, 100);
+}
+
+#mode-select > option[value="arcade"] {
+  color: rgb(0, 255, 100);
+}
+
+#mode-select > option[value="exploration"] {
+  color: rgb(100, 0, 255);
+}
+
+#canvas-placeholder {
+  display: none;
+}
+
+#about {
+  margin: 150px 0;
+}
+
+@media only screen and (max-width: 1000px) {
+  #top-bar {
+    height: 225px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #main-nav {
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  #main-nav * {
+    padding: 25px 0;
+  }
+
+  #canvas-placeholder {
+    margin-top: 300px;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+#nick-input {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+}
+
+#player-color-picker {
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+.canvasInputField {
+  width: 360px;
+  font-family: Acknowledge;
+  font-size: 1em;
+  border: 0;
+  margin-top: 15px;
+  margin-bottom: 30px;
+  padding: 5px;
+  background: #111;
+  color: #999;
+  transition: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  border-radius: 5px;
+}
+
+.canvasInputField:focus {
+  outline: 0;
+  transform: translate(0, -3px);
+  color: #fff;
+  -webkit-box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.75);
+  box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.75);
+}
+
+.canvasSubmitButton {
+  font-family: Acknowledge;
+  font-size: 1em;
+  border: 0;
+  margin-top: 15px;
+  padding: 5px;
+  background: #00000067;
+  color: #fff;
+  transition: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  border-radius: 5px;
+}
+
+.canvasSubmitButton:hover {
+  outline: 0;
+  transform: translate(0, -3px);
+  background: #ffffff;
+  color: black;
+  -webkit-box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.75);
+  box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.75);
+}

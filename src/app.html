@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project SNAK3</title>
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/topbar.css" />
+    <link rel="stylesheet" href="css/canvas.css" />
+    <script src="../lib/p5.min.js"></script>
+    <script src="../lib/jquery-3.5.1.min.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/snake.js"></script>
+    <script src="js/food.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/score.js"></script>
+  </head>
+  <body>
+    <div id="top-bar">
+      <div id="logo-small">
+        <a href="#"
+          ><img src="img/ProjSnake_wide.png" alt="Project Snake Logo"
+        /></a>
+      </div>
+      <nav id="main-nav">
+        <a href="#">play</a>
+        <a href="#about">about</a>
+      </nav>
+    </div>
+    <div id="centered">
+      <div id="canvas-placeholder">
+        <h1>Play</h1>
+        <p>
+          this game is only playable on PC
+        </p>
+      </div>
+      <div id="canvas-wrapper">
+        <!-- Main Menu -->
+        <div id="main-game-menu" class="wrapper-centered-item">
+          <button
+            id="play-button"
+            class="canvasSubmitButton"
+            style="height: 65px;"
+          >
+            Play
+          </button>
+          <label>
+            gamemode
+            <select
+              id="mode-select"
+              class="canvasInputField"
+              name="mode-select"
+            >
+              <option value="classic">classic</option>
+              <option value="arcade">arcade</option>
+              <option value="exploration">exlporation</option>
+            </select>
+          </label>
+
+          <button id="highscores-button" class="canvasSubmitButton">
+            Highscores
+          </button>
+          <button id="settings-button" class="canvasSubmitButton">
+            Settings
+          </button>
+        </div>
+
+        <!-- Nick Input -->
+        <div id="nick-input" class="wrapper-centered-item">
+          <input
+            type="text"
+            id="nickInputField"
+            class="canvasInputField"
+            value="enter your nickname"
+            autofocus
+          />
+
+          <label>
+            Pick your color:
+            <input type="color" id="player-color-picker" value="#ffffff" />
+          </label>
+
+          <input
+            type="submit"
+            id="nick-input-submit"
+            class="canvasSubmitButton"
+            value="play"
+          />
+        </div>
+
+        <!-- Game Over -->
+        <div id="game-over" class="wrapper-centered-item">
+          <h1>Game Over</h1>
+          <h3 id="game-over-score"></h3>
+          <button id="retry-button" class="canvasSubmitButton">retry</button>
+          <button id="back-to-menu-button" class="canvasSubmitButton">
+            back
+          </button>
+        </div>
+
+        <!-- Hiscores -->
+        <div id="hiscores" class="wrapper-centered-item">
+          <h1>Hiscores</h1>
+          <ul id="hiscores-list"></ul>
+          <button id="back-button-hiscores" class="canvasSubmitButton">
+            back
+          </button>
+        </div>
+      </div>
+      <div id="about">
+        <h1>About</h1>
+        <p>
+          This project aims to recreate original Snake game with a cool look and
+          extra modes using vanilla JavaScript.
+        </p>
+      </div>
+      <div id="copy">Copyright &copy; Peter J.</div>
+    </div>
+    <script>
+      function updateNavbar() {
+        var scroll = $(window).scrollTop();
+        if (scroll > 50) {
+          $("#top-bar").addClass("top-bar-scroll");
+        } else if (scroll < 50) {
+          $("#top-bar").removeClass("top-bar-scroll");
+        }
+      }
+
+      updateNavbar();
+      $(document).ready(function () {
+        updateNavbar();
+        $(window).scroll(function () {
+          updateNavbar();
+        });
+      });
+
+      function updateCopy() {
+        document.querySelector("#copy").innerHTML = `
+          Copyright &copy; Peter J. ${new Date().getFullYear()}
+        `;
+      }
+
+      updateCopy();
+    </script>
+  </body>
+</html>

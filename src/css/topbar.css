@@ -1,0 +1,46 @@
+#top-bar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  position: fixed;
+  z-index: 100;
+  transition: all 0.3s ease-in-out;
+}
+
+.top-bar-scroll {
+  background: #111;
+}
+
+#logo-small {
+  filter: grayscale(1);
+  transition: 0.3s ease-in-out;
+}
+
+#logo-small:hover {
+  transform: scale(1.02);
+  filter: none;
+}
+
+#main-nav {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+#main-nav a {
+  padding: 10px 25px;
+  transition: 0.1s linear;
+}
+
+#main-nav a::before {
+  content: "_";
+}
+
+#main-nav a:hover {
+  text-decoration: underline;
+  transform: skew(-15deg, 0deg) translate(5px, 0);
+}
+
+#main-nav a:hover::before {
+  content: ">";
+}
