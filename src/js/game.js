@@ -165,6 +165,14 @@ function keyPressed() {
     game.play();
     ui.changeState(ui.States.HUD);
   }
+
+  /* 
+    Escape to main menu
+    */
+  if (keyCode === ESCAPE) {
+    game.state = game.States.PAUSED;
+    ui.changeState(ui.States.MainMenu);
+  }
 }
 
 /* 
