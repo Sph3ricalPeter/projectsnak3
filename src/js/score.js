@@ -1,11 +1,13 @@
 /**
  * This class handles score couting and storing
- * Uses local storage to persist data
+ * Uses API fetch to manage data
  */
+const API_URL = "...";
+
 class Score {
   constructor() {
-    this.hiscores = { player: 0 };
-    this.nickname = "player";
+    this.hiscores = [{ name: "Player", count: 0 }];
+    this.nickname = "Player";
     this.current = 0;
   }
 
@@ -13,39 +15,66 @@ class Score {
    * Resets hiscores and saved hiscores to initial values
    */
   reset() {
-    score.hiscores = {};
+    score.hiscores = [{ name: "Player", count: 0 }];
     score.nickname = "Player";
     score.current = 0;
-    score.recordHiscore();
+    fetch(API_URL, {
+      method: "DELETE",
+    })
+      .then(() => {
+        console.log("Hiscores reset successfully");
+        score.recordHiscore();
+      })
+      .catch((error) => console.error("Error:", error));
   }
 
   /**
    * Saves current player's highscore
    */
   recordHiscore() {
-    if (this.hiscores[this.nickname] == null) {
-      this.hiscores[this.nickname] = 0;
+    if (!this.hiscores.includes({ name: this.nickname })) {
+      this.hiscores.push({ name: this.nickname, count: 0 });
+    } else {
+      let i = this.hiscores.findIndex(
+        (record) => record.name === this.nickname
+      );
+      this.hiscores[i].count = Math.max(this.hiscores[i].count, this.current);
     }
 
-    this.hiscores[this.nickname] = Math.max(
-      this.hiscores[this.nickname],
-      this.current
-    );
+    let record = { name: this.nickname, count: this.current };
+    console.log("Saving score: ", record);
 
-    localStorage.setItem("hiscores", JSON.stringify(this.hiscores));
+    fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: `name=${record.name}&count=${record.count}`,
+    })
+      .then((response) => console.log("Score saved successfully:", response))
+      .catch((error) => console.error("Error:", error));
   }
 
   /**
-   * Loads hiscores from localStorage, if item doesn't exist, creates new empty hiscores
+   * Loads hiscores
    */
-  loadHiscores() {
-    this.hiscores = JSON.parse(localStorage.getItem("hiscores"));
-
-    if (this.hiscores == null) {
-      this.hiscores = { player: 0 };
-    } else {
-      console.log("loaded hiscores successfully");
-    }
+  async loadHiscores() {
+    return fetch(API_URL)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Fetched hiscores:", data);
+        this.hiscores = data;
+        if (this.hiscores.length < 1) {
+          this.hiscores = [{ name: "Player", count: 0 }];
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        this.hiscores = [{ name: "Player", score: 0 }];
+      })
+      .finally(() => {
+        return this.hiscores;
+      });
   }
 
   /**
@@ -53,14 +82,10 @@ class Score {
    * @param {number} n number of top entris to be returned
    */
   getTopN(n) {
-    let scoresArray = Object.keys(this.hiscores).map((player) => {
-      return [player, this.hiscores[player]];
-    });
-
     // sorty by 2nd element (value) & return only top 10 elements
-    return scoresArray
+    return this.hiscores
       .sort((f, s) => {
-        return s[1] - f[1];
+        return s.count - f.count;
       })
       .slice(0, n);
   }

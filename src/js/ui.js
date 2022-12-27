@@ -287,8 +287,10 @@ class HiscoresUI extends MenuUI {
 
   // update topN hiscores and resizes hiscores content to fit current scale
   update() {
-    this.topN = score.getTopN(10);
-    this.resize(true);
+    score.loadHiscores().then(() => {
+      this.topN = score.getTopN(10);
+      this.resize(true);
+    });
   }
 
   // displays all top hiscores that fit the current canvas size
@@ -297,7 +299,6 @@ class HiscoresUI extends MenuUI {
 
     if (this.topN != null && (n != this.nShown || force)) {
       this.nShown = n;
-      console.log(`hiscores resize to ${this.nShown}`);
 
       this.parent.getElementsByTagName("h1")[0].innerHTML = `Top ${n} Hiscores`;
       this.hiscoresList.innerHTML =
@@ -309,9 +310,9 @@ class HiscoresUI extends MenuUI {
 
         let li = document.createElement("li");
         let pPlayer = document.createElement("p");
-        pPlayer.innerHTML = item[0];
+        pPlayer.innerHTML = item["name"];
         let pScore = document.createElement("p");
-        pScore.innerHTML = item[1];
+        pScore.innerHTML = item["count"];
         li.appendChild(pPlayer);
         li.appendChild(pScore);
 
